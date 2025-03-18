@@ -26,7 +26,6 @@ import { Header } from "next/dist/lib/load-custom-routes";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "export",
-  assetPrefix,
 };
 
 export default nextConfig;
