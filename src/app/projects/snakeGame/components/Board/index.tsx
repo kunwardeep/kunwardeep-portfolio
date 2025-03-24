@@ -1,63 +1,44 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import Snake, { ISnakeBody } from "../Snake";
 
-const Food = styled.div.attrs<{
-  $top: number;
-  $left: number;
-}>((props) => {
-  return {
-    style: {
-      top: `${props.$top}px`,
-      left: `${props.$left}px`,
-    },
-  };
-})`
-  width: 20px;
-  height: 20px;
-  position: fixed;
-  background-color: #5fcc6c;
-  border-radius: 50%;
-`;
+import Snake, { ISnakeBody } from "../Snake";
+import { INITIAL_SNAKE_SPEED, SNAKE_WIDTH } from "../../consts";
+import useSnakeReducer, {
+  makeSnakeGrow,
+  makeSnakeMove,
+  makeSnakeReset,
+} from "../../hooks/useSnakeReducer";
 
 type DirectionType = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
-
-const BoardBoundary = styled.div<{ $width: number; $height: number }>`
-  width: ${(props) => props.$width}px;
-  height: ${(props) => props.$height}px;
-  background-color: red;
-  position: relative;
-`;
 
 interface IBoard {
   width: number;
   height: number;
 }
 
-const getRandomPosition = (max: number, min: number, size: number) => {
-  const randNum = Math.floor(Math.random() * (max - min) + min);
-  return Math.floor(Math.floor(randNum) / size) * size;
+const getRandomPosition = (min: number, max: number) => {
+  if (max <= min) return min;
+
+  const range = max - min;
+  const randNum =
+    Math.floor(Math.random() * (range / SNAKE_WIDTH)) * SNAKE_WIDTH + min;
+
+  return randNum;
 };
 
 export const Board = ({ width, height }: IBoard) => {
-  const snakeWidth = 20;
-  const snakeSpeed = useRef(200);
-  const [foodLocation, setFoodLocation] = useState<ISnakeBody>({
-    top: 100,
-    left: 100,
-  });
-  const [gameFinished, setGameFinished] = useState(false);
-  const [snakeData, setSnakeData] = useState<Array<ISnakeBody>>([
-    { top: width / 2, left: height / 2 },
-    { top: width / 2, left: height / 2 - snakeWidth },
-    { top: width / 2, left: height / 2 - snakeWidth * 2 },
-    { top: width / 2, left: height / 2 - snakeWidth * 3 },
-  ]);
-
-  const direction = useRef<DirectionType | undefined>(undefined);
+  const snakeSpeed = useRef(INITIAL_SNAKE_SPEED);
+  const direction = useRef<DirectionType>(undefined);
   const interval = useRef<NodeJS.Timeout>(undefined);
+
+  const [foodLocation, setFoodLocation] = useState<ISnakeBody | undefined>(
+    undefined
+  );
+
+  const [points, setPoints] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [snakeData, dispatchSnakeData] = useSnakeReducer(width, height);
 
   const updateFoodLocation = useCallback(() => {
     const foodWillEndUpOnSnake = (top: number, left: number) => {
@@ -69,18 +50,10 @@ export const Board = ({ width, height }: IBoard) => {
     };
 
     do {
-      const top = getRandomPosition(
-        snakeWidth,
-        height - snakeWidth,
-        snakeWidth
-      );
-      const left = getRandomPosition(
-        snakeWidth,
-        width - snakeWidth,
-        snakeWidth
-      );
+      const top = getRandomPosition(SNAKE_WIDTH, height - SNAKE_WIDTH);
+      const left = getRandomPosition(SNAKE_WIDTH, width - SNAKE_WIDTH);
+
       if (!foodWillEndUpOnSnake(top, left)) {
-        console.log("Set food loc", top, left);
         setFoodLocation({ top: top, left: left });
         break;
       }
@@ -101,12 +74,18 @@ export const Board = ({ width, height }: IBoard) => {
     [snakeData]
   );
 
+  const increaseSnakeSpeed = () => {
+    snakeSpeed.current = snakeSpeed.current - 5;
+  };
+
   const isFoodEaten = useCallback(
     (snakeHead: ISnakeBody) => {
-      return (
-        snakeHead.left === foodLocation.left &&
-        snakeHead.top === foodLocation.top
-      );
+      if (foodLocation) {
+        return (
+          snakeHead.left === foodLocation.left &&
+          snakeHead.top === foodLocation.top
+        );
+      }
     },
     [foodLocation]
   );
@@ -114,13 +93,11 @@ export const Board = ({ width, height }: IBoard) => {
   const isOutOfBounds = useCallback(
     (snakeHead: ISnakeBody) => {
       if (
-        snakeHead.top === 0 - snakeWidth ||
+        snakeHead.top === 0 - SNAKE_WIDTH ||
         snakeHead.top === height ||
-        snakeHead.left === 0 - snakeWidth ||
+        snakeHead.left === 0 - SNAKE_WIDTH ||
         snakeHead.left === width
       ) {
-        console.log("Out of bounds", snakeHead);
-
         return true;
       }
       return false;
@@ -141,7 +118,7 @@ export const Board = ({ width, height }: IBoard) => {
           }
           direction.current = "ArrowUp";
           newSnakeHead = {
-            top: currentSnakeHead.top - snakeWidth,
+            top: currentSnakeHead.top - SNAKE_WIDTH,
             left: currentSnakeHead.left,
           };
 
@@ -154,11 +131,10 @@ export const Board = ({ width, height }: IBoard) => {
           direction.current = "ArrowDown";
 
           newSnakeHead = {
-            top: currentSnakeHead.top + snakeWidth,
+            top: currentSnakeHead.top + SNAKE_WIDTH,
             left: currentSnakeHead.left,
           };
 
-          console.log("down");
           break;
         case "ArrowLeft":
           if (direction.current === "ArrowRight") {
@@ -168,7 +144,7 @@ export const Board = ({ width, height }: IBoard) => {
           direction.current = "ArrowLeft";
           newSnakeHead = {
             top: currentSnakeHead.top,
-            left: currentSnakeHead.left - snakeWidth,
+            left: currentSnakeHead.left - SNAKE_WIDTH,
           };
 
           break;
@@ -180,35 +156,32 @@ export const Board = ({ width, height }: IBoard) => {
           direction.current = "ArrowRight";
           newSnakeHead = {
             top: currentSnakeHead.top,
-            left: currentSnakeHead.left + snakeWidth,
+            left: currentSnakeHead.left + SNAKE_WIDTH,
           };
 
           break;
       }
 
       if (isOutOfBounds(newSnakeHead) || hasSnakeBitItself(newSnakeHead)) {
-        setGameFinished(true);
-      } else {
-        console.log("move...");
-        const newSnakeData = [newSnakeHead, ...snakeData];
-        // check if food is eaten
-        if (isFoodEaten(newSnakeHead)) {
-          updateFoodLocation();
-          snakeSpeed.current = snakeSpeed.current - 5;
-        } else {
-          // Remove the tail of the snake as the snake is moving
-          console.log("Remove tail move...");
-
-          newSnakeData.pop();
-        }
-
-        setSnakeData(newSnakeData);
+        setGameOver(true);
+        return;
       }
+
+      if (!isFoodEaten(newSnakeHead)) {
+        makeSnakeMove(dispatchSnakeData, newSnakeHead);
+        return;
+      }
+
+      makeSnakeGrow(dispatchSnakeData, newSnakeHead);
+      updateFoodLocation();
+      increaseSnakeSpeed();
+      setPoints(points + 1);
     },
     [
       hasSnakeBitItself,
       isFoodEaten,
       isOutOfBounds,
+      dispatchSnakeData,
       snakeData,
       updateFoodLocation,
     ]
@@ -216,49 +189,89 @@ export const Board = ({ width, height }: IBoard) => {
 
   const handleKeyDown = useCallback(
     (ev: KeyboardEvent) => {
-      moveSnake(ev.code);
+      if (direction.current !== ev.code) {
+        moveSnake(ev.code);
+      }
     },
     [moveSnake]
   );
 
   useEffect(() => {
-    if (gameFinished) {
-      clearInterval(interval.current);
+    if (gameOver || !direction.current) {
       return;
     }
-    if (direction.current) {
-      interval.current = setInterval(() => {
-        console.log("direction", direction);
-        if (direction.current) {
-          moveSnake(direction.current);
-        }
-      }, snakeSpeed.current);
-    }
+
+    interval.current = setInterval(() => {
+      if (direction.current) {
+        moveSnake(direction.current);
+      }
+    }, snakeSpeed.current);
+
     return () => {
-      console.log("clear");
       clearInterval(interval.current);
     };
-  }, [moveSnake, gameFinished]);
+  }, [moveSnake, gameOver]);
 
   useEffect(() => {
-    console.log("fire it only once");
-
+    if (!foodLocation) {
+      updateFoodLocation();
+    }
     document.addEventListener("keydown", handleKeyDown);
 
-    if (gameFinished) {
-      console.log("game finish");
+    if (gameOver) {
       document.removeEventListener("keydown", handleKeyDown);
     }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleKeyDown, gameFinished]);
+  }, [handleKeyDown, gameOver]);
+
+  const handleGameReset = () => {
+    makeSnakeReset(dispatchSnakeData);
+    snakeSpeed.current = INITIAL_SNAKE_SPEED;
+    direction.current = undefined;
+    interval.current = undefined;
+    setGameOver(false);
+    setPoints(0);
+    updateFoodLocation();
+  };
 
   return (
-    <BoardBoundary $width={width} $height={height}>
-      <Snake snakeData={snakeData} width={snakeWidth} height={snakeWidth} />
-      <Food $top={foodLocation.top} $left={foodLocation.left} />
-    </BoardBoundary>
+    <div className="m-20">
+      <div className="p-1">
+        <b>Points:</b>
+        {points}
+      </div>
+
+      <div
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          backgroundColor: `${gameOver ? "#000000" : "#bab9b8"}`,
+        }}
+        className="relative"
+      >
+        <Snake snakeData={snakeData} width={SNAKE_WIDTH} height={SNAKE_WIDTH} />
+        {foodLocation && (
+          <div
+            className="w-5 h-5 absolute bg-emerald-900 rounded-xl"
+            style={{
+              top: `${foodLocation.top}px`,
+              left: `${foodLocation.left}px`,
+            }}
+          />
+        )}
+      </div>
+      <div className="p-1">
+        <button
+          onClick={handleGameReset}
+          type="reset"
+          className="cursor-pointer bg-sky-300 hover:bg-sky-200 rounded-full w-40 h-10"
+        >
+          Reset Game
+        </button>
+      </div>
+    </div>
   );
 };

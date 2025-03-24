@@ -1,9 +1,9 @@
-import { Board } from "./Board";
+import { Board } from "./components/Board";
 
 const SnakeGame = () => {
   return (
     <div>
-      <Board width={400} height={400} />
+      <Board width={600} height={600} />
     </div>
   );
 };
