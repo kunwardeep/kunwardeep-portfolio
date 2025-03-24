@@ -26,6 +26,9 @@ import { Header } from "next/dist/lib/load-custom-routes";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "export",
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 export default nextConfig;
