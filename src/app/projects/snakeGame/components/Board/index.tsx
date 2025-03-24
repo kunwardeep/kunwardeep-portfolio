@@ -108,7 +108,7 @@ export const Board = ({ width, height }: IBoard) => {
   const moveSnake = useCallback(
     (keyPressDirection: string) => {
       const currentSnakeHead = snakeData[0];
-      let newSnakeHead: ISnakeBody = { top: -20, left: -20 };
+      let newSnakeHead: ISnakeBody;
 
       switch (keyPressDirection) {
         case "ArrowUp":
@@ -160,6 +160,8 @@ export const Board = ({ width, height }: IBoard) => {
           };
 
           break;
+        default:
+          return;
       }
 
       if (isOutOfBounds(newSnakeHead) || hasSnakeBitItself(newSnakeHead)) {
