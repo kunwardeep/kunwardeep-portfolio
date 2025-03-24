@@ -183,6 +183,7 @@ export const Board = ({ width, height }: IBoard) => {
       isOutOfBounds,
       dispatchSnakeData,
       snakeData,
+      points,
       updateFoodLocation,
     ]
   );
@@ -225,7 +226,7 @@ export const Board = ({ width, height }: IBoard) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleKeyDown, gameOver]);
+  }, [handleKeyDown, gameOver, foodLocation, updateFoodLocation]);
 
   const handleGameReset = () => {
     makeSnakeReset(dispatchSnakeData);
