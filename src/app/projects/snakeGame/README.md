@@ -2,6 +2,10 @@
 
 A modern implementation of the classic Snake game built with Next.js, React, and TypeScript. This project showcases interactive game development using modern web technologies.
 
+## 🎮 Play here
+
+https://www.kunwardeep.com/projects/snakeGame
+
 ## 🎥 Gameplay Demo
 
 
@@ -12,7 +16,7 @@ https://github.com/user-attachments/assets/3e836e70-1d4e-4a05-ae10-a8a1a8463bc0
 
 ## 🎮 Game Features
 
-- Responsive game board that adapts to screen size
+- Responsive game board that adapts to screen size(have to pass that in code for now)
 - Smooth snake movement and controls
 - Score tracking
 - Collision detection
