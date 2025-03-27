@@ -4,10 +4,11 @@ A modern implementation of the classic Snake game built with Next.js, React, and
 
 ## 🎥 Gameplay Demo
 
-<video width="100%" controls>
-  <source src="./assets/video/snake.mov" type="video/quicktime">
-  Your browser does not support the video tag.
-</video>
+
+
+https://github.com/user-attachments/assets/3e836e70-1d4e-4a05-ae10-a8a1a8463bc0
+
+
 
 ## 🎮 Game Features
 
