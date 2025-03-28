@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import avatar from "@/app/projects/portfolio/assets/images/avatar.png";
 
 const Body = () => {
   return (
@@ -6,7 +8,7 @@ const Body = () => {
       <div className="hero-content flex-col lg:flex-row">
         <div className="avatar">
           <div className="w-64 rounded-full">
-            <img src="https://avatars.githubusercontent.com/u/13211086?v=4" />
+            <Image src={avatar} alt="GitHub Avatar" width={200} height={100} />
           </div>
         </div>
 
