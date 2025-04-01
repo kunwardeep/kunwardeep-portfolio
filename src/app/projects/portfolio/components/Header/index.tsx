@@ -53,6 +53,14 @@ const Header = () => {
                       User Search
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      className="whitespace-nowrap"
+                      href="/projects/digitalClock"
+                    >
+                      Digital clock
+                    </Link>
+                  </li>
                 </ul>
               </li>
             </ul>
@@ -91,6 +99,14 @@ const Header = () => {
                       href="/projects/userSearch"
                     >
                       User Search
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="whitespace-nowrap"
+                      href="/projects/digitalClock"
+                    >
+                      Digital clock
                     </Link>
                   </li>
                 </ul>
