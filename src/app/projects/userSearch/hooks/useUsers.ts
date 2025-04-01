@@ -21,6 +21,7 @@ const useUsers = () => {
 
         setData(json.results);
       } catch (error) {
+        console.error("Error happened", error);
         setError(new Error("Error happened"));
       } finally {
         setLoading(false);
