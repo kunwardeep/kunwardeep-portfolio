@@ -241,7 +241,7 @@ export const Board = ({ width, height }: IBoard) => {
   };
 
   return (
-    <div className="m-20">
+    <div className="flex flex-col items-center justify-center w-full h-full bg-base-200">
       <div className="p-1">
         <b>Points:</b>
         {points}

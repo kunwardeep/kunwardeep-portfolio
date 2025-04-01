@@ -1,11 +1,14 @@
+"use client";
+
 import React from "react";
-import Header from "./components/Header";
+import AppContainer from "./components/AppContainer";
+import HomePage from "./components/HomePage";
 
 const Portfolio = () => {
   return (
-    <div>
-      <Header />
-    </div>
+    <AppContainer>
+      <HomePage />
+    </AppContainer>
   );
 };
 

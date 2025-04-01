@@ -43,7 +43,7 @@ const DigitalClock = () => {
   }, [formatDatePart, formatHour]);
 
   return (
-    <div className="p-20 flex justify-center flex-col items-center">
+    <div className="flex flex-col items-center justify-center w-full h-200 bg-base-200">
       <div className="text-1xl">Show 24 hour clock </div>
       <div>
         <input
