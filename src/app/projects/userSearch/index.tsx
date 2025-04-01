@@ -51,13 +51,11 @@ const UserSearch = () => {
         } else {
           const valueToSearch = value.toLowerCase();
           const filteredUsers = originalUserData.current.filter((d) => {
-            console.log(d.name.first, d.name.first.includes(value));
             return (
               d.name.first.toLowerCase().includes(valueToSearch) ||
               d.name.last.toLowerCase().includes(valueToSearch)
             );
           });
-          console.log(filteredUsers);
           setDisplayUsers(filteredUsers);
         }
       }

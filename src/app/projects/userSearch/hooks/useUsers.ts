@@ -18,10 +18,9 @@ const useUsers = () => {
         }
 
         const json = await response.json();
-        console.log(json.results);
+
         setData(json.results);
       } catch (error) {
-        console.error("Error happened", error);
         setError(new Error("Error happened"));
       } finally {
         setLoading(false);

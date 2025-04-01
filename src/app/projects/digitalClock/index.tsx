@@ -12,8 +12,6 @@ const DigitalClock = () => {
     []
   );
 
-  console.log("clockType12", clockType12);
-
   const formatHour = useCallback(
     (hour: number) => {
       if (!clockType12) return hour;
