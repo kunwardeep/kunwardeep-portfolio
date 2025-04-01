@@ -63,7 +63,7 @@ const UserSearch = () => {
   };
 
   return (
-    <div className="bg-amber-300 flex w-full flex-col items-center">
+    <div className="bg-base-200 flex w-full flex-col items-center">
       <DisplayResultsData count={displayUsers?.length ?? 0} />
       <SearchBar searchFn={searchFn} />
       {loading && <Loading />}

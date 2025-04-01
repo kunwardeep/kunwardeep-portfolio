@@ -1,7 +1,12 @@
 import DigitalClock from ".";
+import AppContainer from "../portfolio/components/AppContainer";
 
 const Page = () => {
-  return <DigitalClock />;
+  return (
+    <AppContainer showBreadCrumbs>
+      <DigitalClock />
+    </AppContainer>
+  );
 };
 
 export default Page;
